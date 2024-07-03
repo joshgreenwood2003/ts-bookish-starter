@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 import healthcheckRoutes from './controllers/healthcheckController';
 import bookRoutes from './controllers/bookController';
-
+import { sqlController } from './controllers/sqlController';
 const port = process.env['PORT'] || 3000;
 
 const app = express();
@@ -17,3 +17,4 @@ app.listen(port, () => {
  */
 app.use('/healthcheck', healthcheckRoutes);
 app.use('/books', bookRoutes);
+sqlController.Connect();
