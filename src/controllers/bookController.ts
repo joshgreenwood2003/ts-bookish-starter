@@ -1,5 +1,4 @@
-import { Book } from '../classes/Book';
-
+import { BookModel } from '../models/BookModel';
 
 import { Router, Request, Response } from 'express';
 import { sqlController } from './sqlController';
@@ -27,29 +26,32 @@ class BookController {
         });
     }
 
-    getAll(req: Request, res: Response) {
+    async getAll(req: Request, res: Response) {
+    
         // TODO: implement functionality
         if (sqlController.connected) {
-            const books: Book[] = [];
+           const books = await BookModel.Book.findAll();
+           return res.status(200).json(books);
+            // const books: Book[] = [];
 
-            const SQLCode = new SQLRequest('SELECT * FROM Books', function (err) {
-                if (err) {
-                    console.log(err);
-                }
-            });
+            // const SQLCode = new SQLRequest('SELECT * FROM Books', function (err) {
+            //     if (err) {
+            //         console.log(err);
+            //     }
+            // });
 
-            SQLCode.on('row', function (columns) {
-                books.push(new Book(columns[0].value, columns[1].value, columns[2].value, columns[3].value));
-            });
+            // SQLCode.on('row', function (columns) {
+            //     books.push(new Book(columns[0].value, columns[1].value, columns[2].value, columns[3].value));
+            // });
 
-            SQLCode.on('requestCompleted', function (rowCount) {
-                return res.status(200).json({ rows: rowCount, books: books });
-            });
-            SQLCode.on('error', function (e) {
-                console.log(e);
-            });
+            // SQLCode.on('requestCompleted', function (rowCount) {
+            //     return res.status(200).json({ rows: rowCount, books: books });
+            // });
+            // SQLCode.on('error', function (e) {
+            //     console.log(e);
+            // });
 
-            sqlController.connection.execSql(SQLCode);
+            // sqlController.connection.execSql(SQLCode);
 
         }
 
