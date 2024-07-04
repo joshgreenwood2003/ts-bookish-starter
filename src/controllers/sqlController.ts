@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize';
 import { Connection } from 'tedious';
 import { BookModel } from '../models/BookModel';
+import { UserModel } from '../models/UserModel';
+import { UserBookingModel } from '../models/UserBookingModel';
 
 
 
@@ -15,7 +17,6 @@ export class sqlController {
     public static connected = false;
     public static sequelize:Sequelize;
     public static Connect() {
-
 
 
         sqlController.sequelize = new Sequelize('Bookish', 'BookishUser', '£3.40MealDeal', {
@@ -37,6 +38,8 @@ export class sqlController {
               sqlController.connected = true;
               await this.sequelize.sync({force:true});
               BookModel.onConnect();
+              UserModel.onConnect();
+              UserBookingModel.onConnect();
               console.log('Connection has been established successfully.');
             } catch (error) {
               console.error('Unable to connect to the database:', error);

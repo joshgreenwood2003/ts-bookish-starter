@@ -1,9 +1,9 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Model, ModelCtor, Sequelize } from "sequelize";
 import { sqlController } from "../controllers/sqlController";
 
 
 export class BookModel{
-    static Book;
+    static Book:ModelCtor<Model<any, any>>;
 
     static onConnect(){
         BookModel.Book = sqlController.sequelize.define('Book', {
