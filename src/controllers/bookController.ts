@@ -1,9 +1,6 @@
 import { BookModel } from '../models/BookModel';
-
 import { Router, Request, Response } from 'express';
 import { sqlController } from './sqlController';
-const SQLRequest = require('tedious').Request;
-
 
 class BookController {
     router: Router;
@@ -12,50 +9,47 @@ class BookController {
         this.router = Router();
         this.router.get('/all', this.getAll.bind(this));
         this.router.get('/:id', this.getBook.bind(this));
-
         this.router.post('/', this.createBook.bind(this));
     }
 
     getBook(req: Request, res: Response) {
-        // TODO: implement functionality
+        if (sqlController.connected){
+            try{}
+            catch{
+                return res.status(500).json({
+                    error: 'server_error',
+                    error_description: 'Unknown error',
+                });
+            }
+        }
+        else{
+            return res.status(500).json({
+                error: 'server_error',
+                error_description: 'Could not connect to database.',
+            });
+        }
 
-
-        return res.status(500).json({
-            error: 'server_error',
-            error_description: 'Endpoint not implemented yet.',
-        });
     }
 
     async getAll(req: Request, res: Response) {
-    
-        // TODO: implement functionality
         if (sqlController.connected) {
-           const books = await BookModel.Book.findAll();
-           return res.status(200).json(books);
-            // const books: Book[] = [];
-
-            // const SQLCode = new SQLRequest('SELECT * FROM Books', function (err) {
-            //     if (err) {
-            //         console.log(err);
-            //     }
-            // });
-
-            // SQLCode.on('row', function (columns) {
-            //     books.push(new Book(columns[0].value, columns[1].value, columns[2].value, columns[3].value));
-            // });
-
-            // SQLCode.on('requestCompleted', function (rowCount) {
-            //     return res.status(200).json({ rows: rowCount, books: books });
-            // });
-            // SQLCode.on('error', function (e) {
-            //     console.log(e);
-            // });
-
-            // sqlController.connection.execSql(SQLCode);
-
+            try{
+                const books = await BookModel.Book.findAll();
+                return res.status(200).json(books);
+            }
+            catch{
+                return res.status(500).json({
+                    error: 'server_error',
+                    error_description: 'Could not connect to database.',
+                });
+            }   
         }
-
-
+        else{
+            return res.status(500).json({
+                error: 'server_error',
+                error_description: 'Could not connect to database',
+            });
+        }
     }
 
 
